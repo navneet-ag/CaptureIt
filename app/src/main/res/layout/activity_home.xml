@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="100dp">
+
         <Button
             android:id="@+id/selfieBtn"
             android:layout_width="150dp"
