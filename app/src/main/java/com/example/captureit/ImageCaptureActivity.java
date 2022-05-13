@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
 public class ImageCaptureActivity extends AppCompatActivity implements View.OnClickListener {
+    private static String Tag = "ImageCaptureActivity";
     private Button capImg;
     private PreviewView imgPreview;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
@@ -85,6 +87,7 @@ public class ImageCaptureActivity extends AppCompatActivity implements View.OnCl
         Date date = new Date();
         String timestamp = String.valueOf(date.getTime());
         String photoFilePath = photoDir.getAbsolutePath() +"/" + timestamp + ".jpg";
+
         File photoFile = new File(photoFilePath);
         imageCapture.takePicture(
                 new ImageCapture.OutputFileOptions.Builder(photoFile).build(),
@@ -97,6 +100,7 @@ public class ImageCaptureActivity extends AppCompatActivity implements View.OnCl
 
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
+                        Log.d(Tag,exception.toString());
                         Toast.makeText(ImageCaptureActivity.this,"Some error occurred " +exception.getMessage(),Toast.LENGTH_SHORT).show();
                     }
                 }

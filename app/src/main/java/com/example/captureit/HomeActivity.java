@@ -67,17 +67,18 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG,"In onRequestPermissionsResult");
-        Log.d(TAG,grantResults[0] + " " + permissions[0]);
-        if(permissions.length!=0  && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        for(int i=0;i<permissions.length;i++)
         {
-            Log.d(TAG,"In if condition");
-            capImg();
-        }
-        else
-        {
-            Toast.makeText(HomeActivity.this, "Please provide permission to access Camera", Toast.LENGTH_SHORT).show();
+            Log.d(TAG,grantResults[i] + " " + permissions[i]);
+
+            if(permissions[i].equals("android.permission.CAMERA") && grantResults[i] == PackageManager.PERMISSION_GRANTED)
+            {
+                Log.d(TAG,"In if condition");
+                capImg();
+            }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
     }
 
     private void capImg() {
@@ -91,14 +92,14 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-//        {
-//            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},writeReqCode);
-//        }
-//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-//        {
-//            ActivityCompat.requestPermissions(this, new String[] {},readReqCode);
-//        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},writeReqCode);
+        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, new String[] {},readReqCode);
+        }
 //
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
