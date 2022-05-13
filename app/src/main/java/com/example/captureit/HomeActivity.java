@@ -35,11 +35,8 @@ public class HomeActivity extends AppCompatActivity {
     private Button selfieBtn, galBtn;
     private ImageView curImg;
     private static int camReqCode = 100;
-    private static int writeReqCode = 704;
-    private static int readReqCode = 705;
-
     private static String TAG = "HomeActivity";
-    private static Bitmap rotateBitmap(Bitmap source,  float degrees) {
+    public static Bitmap rotateBitmap(Bitmap source,  float degrees) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degrees);
         return Bitmap.createBitmap(
@@ -51,13 +48,10 @@ public class HomeActivity extends AppCompatActivity {
     private void checkCamPermission()
     {
         Log.d(TAG,"In checkCamPermission");
-//        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},writeReqCode);
-
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA},camReqCode);
         }
-
         else
         {
             capImg();
@@ -67,40 +61,49 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG,"In onRequestPermissionsResult");
-        for(int i=0;i<permissions.length;i++)
+        Log.d(TAG,grantResults[0] + " " + permissions[0]);
+        if(permissions.length!=0  && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
-            Log.d(TAG,grantResults[i] + " " + permissions[i]);
-
-            if(permissions[i].equals("android.permission.CAMERA") && grantResults[i] == PackageManager.PERMISSION_GRANTED)
-            {
-                Log.d(TAG,"In if condition");
-                capImg();
-            }
+            Log.d(TAG,"In if condition");
+            capImg();
+        }
+        else
+        {
+            Toast.makeText(HomeActivity.this, "Please provide permission to access Camera", Toast.LENGTH_SHORT).show();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
     }
 
     private void capImg() {
-        Intent intent = new Intent(HomeActivity.this,ImageCaptureActivity.class);
-        HomeActivity.this.startActivity(intent);
-//        Toast.makeText(HomeActivity.this, "Permission was granted", Toast.LENGTH_SHORT).show();
-//        Intent camIntent  = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivityForResult(camIntent, CAM_REQUEST_CODE);
+        Toast.makeText(HomeActivity.this, "Permission was granted", Toast.LENGTH_SHORT).show();
+        Intent camIntent  = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(camIntent, CAM_REQUEST_CODE);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CAM_REQUEST_CODE)
+        {
+            Bitmap curImgBitMap  = (Bitmap) data.getExtras().get("data");
+            // Reference https://stackoverflow.com/questions/7698409/android-transform-a-bitmap-into-an-input-stream
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            curImgBitMap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            byte[] bitmapdata = baos.toByteArray();
+            ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
+
+            Bitmap rotatedBitmap = curImgBitMap;
+            rotatedBitmap = rotateBitmap(curImgBitMap,270);
+
+            curImg.setImageBitmap(rotatedBitmap);
+            Intent intent = new Intent(HomeActivity.this,EditActivity.class);
+            intent.putExtra("BitMap",rotatedBitmap);
+            HomeActivity.this.startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},writeReqCode);
-        }
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, new String[] {},readReqCode);
-        }
-//
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         selfieBtn = findViewById(R.id.selfieBtn);

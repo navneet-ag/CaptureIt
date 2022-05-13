@@ -12,14 +12,41 @@
         android:orientation="horizontal"
         android:layout_marginTop="50dp"
         android:gravity="center">
+
         <ImageView
             android:id="@+id/imageViewEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_launcher_background"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_launcher_background" />
 
     </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp">
+        <Button
+            android:id="@+id/rotBtn"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="30dp"
+            android:text="Rotate" />
+        <Button
+            android:id="@+id/cropBtn"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:text="Crop"
+            android:layout_toRightOf="@+id/rotBtn"
+            android:layout_marginLeft="20dp"/>
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:text="Save"
+            android:layout_toRightOf="@+id/cropBtn"
+            android:layout_marginLeft="20dp"/>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>
